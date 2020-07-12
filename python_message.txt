@@ -1,0 +1,1 @@
+{"requestType": "emit", "route": "message", "data": "lol", "nameSpace": "localhost", "namespace": "localhost"}
