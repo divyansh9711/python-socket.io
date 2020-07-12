@@ -35,4 +35,5 @@ def main():
     observer.join()
 
 def getData():
+    print("received")
     
