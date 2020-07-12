@@ -1,6 +1,8 @@
 import json
-import parenty,threading,obs,queue
-responseData = False
+import parenty,threading,obs
+from waiting import wait
+data_status = False
+response_data = None
 data = {}
 data['requestType'] = "none"
 data['route'] = "message"
@@ -9,11 +11,11 @@ data['nameSpace'] = "localhost"
 def initChild():
     parenty.init()
 
-def callObs(q):
-    obs.main(q)
+
 
 
 def init_comm_file():
+    print("init me")
     x = threading.Thread(target = initChild,args = ())
     x.start()
     print('Initializing python side communication file')
@@ -31,21 +33,20 @@ def request_connection():
         json.dump(data, file)
         return
 
-def response(data):
-    print(data)
+def response(response):
+    global data_status,response_data
+    data_status = True
+    response_data = response
 
 def request_general(requestType,dataR):
+    global response_data
     print("Requesting")
-    que = queue.Queue()
     global data
     data['data'] = dataR
     data['requestType'] = requestType
     with open('../python_message.txt', 'w') as file:
         print(data)
         json.dump(data, file)
-
-    t = threading.Thread(target = callObs, args=(que,))
-    t.start()
-    t.join()
-    print(que)
+    wait(lambda: data_status)
+    print(response_data)
     return

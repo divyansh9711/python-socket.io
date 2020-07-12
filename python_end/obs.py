@@ -10,19 +10,17 @@ observer = None
 que = None
 class MyHandler(PatternMatchingEventHandler):
     patterns=["*.json"]
-    global data,que
+    global data
     def process(self, event):
         print("Response")
         with open('../node_message.json') as file:
             data = json.load(file)
-            que.put(data)
-            observer.join()
+            socket_controller.response(data)
             return
     def on_modified(self, event):
         self.process(event)
         
 def main():
-
     observer = Observer()
     observer.schedule(MyHandler(), path='../')
     observer.start()
@@ -33,7 +31,3 @@ def main():
         observer.stop()
 
     observer.join()
-
-def getData():
-    print("received")
-    
